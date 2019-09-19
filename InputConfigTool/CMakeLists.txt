@@ -24,7 +24,6 @@ set(OpenGL_GL_PREFERENCE "LEGACY")
 find_package(OpenGL REQUIRED)
 
 add_executable(InputConfigTool WIN32 ${SRC})
-# target_compile_features(InputConfigTool PRIVATE cxx_std_14)
 
 set_property(TARGET InputConfigTool PROPERTY CXX_STANDARD 17)
 set_property(TARGET InputConfigTool PROPERTY CMAKE_CXX_STANDARD_REQUIRED ON)
