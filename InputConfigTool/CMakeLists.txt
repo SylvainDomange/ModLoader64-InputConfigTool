@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.7)
 
 set(SRC
 src/ImGuiContextWrapper.h
@@ -24,7 +24,10 @@ set(OpenGL_GL_PREFERENCE "LEGACY")
 find_package(OpenGL REQUIRED)
 
 add_executable(InputConfigTool WIN32 ${SRC})
-target_compile_features(InputConfigTool PRIVATE cxx_std_17)
+# target_compile_features(InputConfigTool PRIVATE cxx_std_14)
+
+set_property(TARGET InputConfigTool PROPERTY CXX_STANDARD 17)
+set_property(TARGET InputConfigTool PROPERTY CMAKE_CXX_STANDARD_REQUIRED ON)
 
 target_include_directories(InputConfigTool PRIVATE
 	"include"
@@ -34,7 +37,7 @@ target_include_directories(InputConfigTool PRIVATE
 	"${PROJECT_SOURCE_DIR}/thirdparty/include" 
 	)
 
-target_link_libraries(InputConfigTool PRIVATE imgui ${SDL2_LIBRARIES} ${FMT_LIBRARIES} OpenGL::GL)
+target_link_libraries(InputConfigTool PRIVATE imgui ${SDL2_LIBRARIES} ${FMT_LIBRARIES} ${OPENGL_LIBRARIES})
 
 if(WIN32)
 	target_compile_definitions(InputConfigTool PRIVATE -D_CRT_SECURE_NO_WARNINGS)

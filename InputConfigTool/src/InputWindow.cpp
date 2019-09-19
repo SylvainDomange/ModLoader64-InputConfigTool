@@ -2,6 +2,7 @@
 #include <boost/algorithm/string.hpp>
 #include <fmt/format.h>
 #include <SDL2/SDL_timer.h>
+#include <mystd_clamp.h>
 
 #include "InputWindow.h"
 #include "ImGuiUtil.h"
@@ -57,12 +58,12 @@ void InputWindow::show()
 		ImGui::Separator();
 
 		if (ImGui::InputFloat2("Analog deadzone", m_analogDeadzones.data(), "%.2f%%")) {
-			for (auto& i : m_analogDeadzones) i = std::clamp(i, 0.0f, 100.0f);
+			for (auto& i : m_analogDeadzones) i = mystd::clamp(i, 0.0f, 100.0f);
 			m_isDirty = true;
 		}
 
 		if (ImGui::InputFloat2("Analog peak", m_analogPeaks.data(), "%.2f%%")) {
-			for (auto& i : m_analogPeaks) i = std::clamp(i, 0.0f, 100.0f);
+			for (auto& i : m_analogPeaks) i = mystd::clamp(i, 0.0f, 100.0f);
 			m_isDirty = true;
 		}
 
@@ -314,7 +315,7 @@ bool InputWindow::showMappingButton(int mappingIndex, int mappingSectionIndex, b
 		ImGui::SameLine();
 		ImGui::PushItemWidth(65);
 		if (ImGui::InputFloat(fmt::format("##a{}_{}", mappingIndex, mappingSectionIndex).c_str(), &map.jaxis.deadzone, 0.0f, 0.0f, "%.2f%%")) {
-			map.jaxis.deadzone = std::clamp(map.jaxis.deadzone, 0.0f, 100.0f);
+			map.jaxis.deadzone = mystd::clamp(map.jaxis.deadzone, 0.0f, 100.0f);
 			m_isDirty = true;
 		}
 		ImGui::PopItemWidth();
@@ -377,12 +378,12 @@ void InputWindow::loadConfig()
 	std::string deviceName = section.getStringOrDefault("name", "Keyboard");
 	m_plugged = section.getBoolOrDefault("plugged", false);
 	int plugin = section.getIntOrDefault("plugin", 2);
-	auto [analogDeadzoneX, analogDeadzoneY] = scan2i(section.getStringOrDefault("AnalogDeadzone", "4096,4096"));
-	auto [analogPeakX, analogPeakY] = scan2i(section.getStringOrDefault("AnalogPeak", "32768,32768"));
-	m_analogDeadzones[0] = MappingUtil::deadzoneToPercent(analogDeadzoneX);
-	m_analogDeadzones[1] = MappingUtil::deadzoneToPercent(analogDeadzoneY);
-	m_analogPeaks[0] = MappingUtil::deadzoneToPercent(analogPeakX);
-	m_analogPeaks[1] = MappingUtil::deadzoneToPercent(analogPeakY);
+	auto analogDeadzones = scan2i(section.getStringOrDefault("AnalogDeadzone", "4096,4096"));
+	auto analogPeaks = scan2i(section.getStringOrDefault("AnalogPeak", "32768,32768"));
+	m_analogDeadzones[0] = MappingUtil::deadzoneToPercent(analogDeadzones.first);
+	m_analogDeadzones[1] = MappingUtil::deadzoneToPercent(analogDeadzones.second);
+	m_analogPeaks[0] = MappingUtil::deadzoneToPercent(analogPeaks.first);
+	m_analogPeaks[1] = MappingUtil::deadzoneToPercent(analogPeaks.second);
 
 	if (plugin == 1 || plugin == 2) m_pluginIndex = plugin - 1;
 	else if (plugin == 5) m_pluginIndex = 2;

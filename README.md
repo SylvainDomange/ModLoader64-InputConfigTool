@@ -15,8 +15,8 @@ InputConfigTool
 
 ### Building for Linux x64 using CMake
 ```cmake
-# Install dependencies
-sudo apt install cmake build-essential libsdl2-dev libfmt-dev libgl1-mesa-dev
+# Install dependencies (Debian Stretch)
+sudo apt install cmake build-essential libsdl2-dev libfmt3-dev libgl1-mesa-dev
 # Build
 ./BuildPackageLinux.sh
 # Run
